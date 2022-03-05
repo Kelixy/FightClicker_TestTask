@@ -1173,7 +1173,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 132564624}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.71, y: 0, z: -5.91}
+  m_LocalPosition: {x: -2.26, y: 0, z: -5.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 132209330}
@@ -7237,9 +7237,9 @@ MonoBehaviour:
   fighterAnimators:
   - {fileID: 125285712}
   - {fileID: 1243172888}
-  fightersSwords:
-  - {fileID: 132209434}
-  - {fileID: 1250934354}
+  fightSettings: {fileID: 11400000, guid: 3a509ecec7f990347809d202e3851c28, type: 2}
+  awarenessDuration: 0.5
+  defenceProbability: 0.5
 --- !u!1 &1874304178
 GameObject:
   m_ObjectHideFlags: 0

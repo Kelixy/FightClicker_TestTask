@@ -16,7 +16,7 @@ namespace Controllers
         
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
             {
                 if (_tutorialIsOn)
                 {
@@ -24,7 +24,12 @@ namespace Controllers
                     _tutorialIsOn = false;
                     return;
                 }
-                
+
+                if (fightController.AnimationsArePlaying)
+                {
+                    return;
+                }
+
                 fightController.SwitchFighters();
                 fightController.Hit();
             }

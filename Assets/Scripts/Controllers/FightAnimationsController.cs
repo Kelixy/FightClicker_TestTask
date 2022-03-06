@@ -14,18 +14,22 @@ namespace Controllers
         [Range(0f,1f)][SerializeField] private float defenceProbability = 0.5f;
 
         private (int attacker, int defender) _fighterInd = (0,1);
+        private float _fightAnimLength;
         private int _currentAnimationIndex;
         private int CurrentAnimationIndex
         {
             get => _currentAnimationIndex;
             set => _currentAnimationIndex = value >= fightSettings.AnimationsCombinations.Length ? 0 : value;
         }
+        
+        public bool AnimationsArePlaying { get; set; }
 
         public void Hit()
         {
             DOTween.Sequence()
                 .AppendCallback(() =>
                 {
+                    AnimationsArePlaying = true;
                     var fighter = fighterAnimators[_fighterInd.attacker];
                     var combination = fightSettings.AnimationsCombinations[CurrentAnimationIndex];
                     fighter.Play(combination.AttackAnimationHash);
@@ -34,7 +38,12 @@ namespace Controllers
                 .AppendCallback(() =>
                 {
                     DefendIfPossible();
+                    _fightAnimLength = GetAnimationDuration();
                     CurrentAnimationIndex++;
+                })
+                .InsertCallback(_fightAnimLength, () =>
+                {
+                    AnimationsArePlaying = false;
                 });
         }
 
@@ -53,6 +62,16 @@ namespace Controllers
                 : fightSettings.AnimationsCombinations[CurrentAnimationIndex].HitAnimationHash;
             fighterAnimators[_fighterInd.defender].Play(hashKey);
             if (!defenceIsPossible) bloodEffects[_fighterInd.defender].Play();
+        }
+
+        private float GetAnimationDuration()
+        {
+            var attackerClipInfo = fighterAnimators[_fighterInd.attacker].GetCurrentAnimatorClipInfo(0);
+            var defenderClipInfo = fighterAnimators[_fighterInd.defender].GetCurrentAnimatorClipInfo(0);
+            var attackerClipLength = attackerClipInfo[0].clip.length;
+            var defenderClipLength = defenderClipInfo[0].clip.length;
+            
+            return attackerClipLength > defenderClipLength ? attackerClipLength : defenderClipLength;
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DG.Tweening;
 using Settings;
 using UnityEngine;
@@ -8,12 +7,13 @@ namespace Controllers
     public class FightAnimationsController : MonoBehaviour
     {
         [SerializeField] private Animator[] fighterAnimators;
+        [SerializeField] private ParticleSystem[] bloodEffects;
         [SerializeField] private FightSettings fightSettings;
+        
         [SerializeField] private float awarenessDuration = 0.5f;
         [Range(0f,1f)][SerializeField] private float defenceProbability = 0.5f;
 
         private (int attacker, int defender) _fighterInd = (0,1);
-        private int _currentAttackHash;
         private int _currentAnimationIndex;
         private int CurrentAnimationIndex
         {
@@ -26,10 +26,9 @@ namespace Controllers
             DOTween.Sequence()
                 .AppendCallback(() =>
                 {
-                    _currentAttackHash =
-                        fightSettings.AnimationsCombinations[CurrentAnimationIndex].AttackAnimationHash;
                     var fighter = fighterAnimators[_fighterInd.attacker];
-                    fighter.Play(_currentAttackHash);
+                    var combination = fightSettings.AnimationsCombinations[CurrentAnimationIndex];
+                    fighter.Play(combination.AttackAnimationHash);
                 })
                 .AppendInterval(awarenessDuration)
                 .AppendCallback(() =>
@@ -39,7 +38,7 @@ namespace Controllers
                 });
         }
 
-        private void SwitchFighters()
+        public void SwitchFighters()
         {
             _fighterInd = (_fighterInd.defender, _fighterInd.attacker);
         }
@@ -48,19 +47,12 @@ namespace Controllers
 
         private void DefendIfPossible()
         {
-            var hashKey = CheckIfDefencePossible() ? 
+            var defenceIsPossible = CheckIfDefencePossible();
+            var hashKey = defenceIsPossible ? 
                 fightSettings.AnimationsCombinations[CurrentAnimationIndex].DefenceAnimationHash 
                 : fightSettings.AnimationsCombinations[CurrentAnimationIndex].HitAnimationHash;
             fighterAnimators[_fighterInd.defender].Play(hashKey);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q) || Input.GetMouseButtonDown(0))
-            {
-                SwitchFighters();
-                Hit();
-            }
+            if (!defenceIsPossible) bloodEffects[_fighterInd.defender].Play();
         }
     }
 }

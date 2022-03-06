@@ -17,15 +17,15 @@ namespace Settings
             private int _defenceAnimationHash;
             private int _hitAnimationHash;
 
-            public int AttackAnimationHash => _attackAnimationHash == 0
+            public int AttackAnimationHash => _attackAnimationHash == default
                 ? _attackAnimationHash = Animator.StringToHash(attackAnimationName)
                 : _attackAnimationHash;
             
-            public int DefenceAnimationHash => _defenceAnimationHash == 0
+            public int DefenceAnimationHash => _defenceAnimationHash == default
                 ? _defenceAnimationHash = Animator.StringToHash(defenceAnimationName)
                 : _defenceAnimationHash;
             
-            public int HitAnimationHash => _hitAnimationHash == 0
+            public int HitAnimationHash => _hitAnimationHash == default
                 ? _hitAnimationHash = Animator.StringToHash(hitAnimationName)
                 : _hitAnimationHash;
         }

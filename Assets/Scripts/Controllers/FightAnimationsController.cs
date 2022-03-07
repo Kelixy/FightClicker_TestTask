@@ -16,13 +16,13 @@ namespace Controllers
         private (int attacker, int defender) _fighterInd = (0,1);
         private float _fightAnimLength;
         private int _currentAnimationIndex;
-        private int CurrentAnimationIndex
-        {
-            get => _currentAnimationIndex;
-            set => _currentAnimationIndex = value >= fightSettings.AnimationsCombinations.Length ? 0 : value;
-        }
         
-        public bool AnimationsArePlaying { get; set; }
+        public bool AnimationsArePlaying { get; private set; }
+
+        public void Initialize()
+        {
+            _fightAnimLength = GetAnimationDuration();
+        }
 
         public void Hit()
         {
@@ -31,7 +31,7 @@ namespace Controllers
                 {
                     AnimationsArePlaying = true;
                     var fighter = fighterAnimators[_fighterInd.attacker];
-                    var combination = fightSettings.AnimationsCombinations[CurrentAnimationIndex];
+                    var combination = fightSettings.AnimationsCombinations[_currentAnimationIndex];
                     fighter.Play(combination.AttackAnimationHash);
                 })
                 .AppendInterval(awarenessDuration)
@@ -39,9 +39,10 @@ namespace Controllers
                 {
                     DefendIfPossible();
                     _fightAnimLength = GetAnimationDuration();
-                    CurrentAnimationIndex++;
+                    _currentAnimationIndex = Random.Range(0, fightSettings.AnimationsCombinations.Length);
                 })
-                .InsertCallback(_fightAnimLength, () =>
+                .AppendInterval(_fightAnimLength - awarenessDuration)
+                .AppendCallback(() =>
                 {
                     AnimationsArePlaying = false;
                 });
@@ -58,8 +59,8 @@ namespace Controllers
         {
             var defenceIsPossible = CheckIfDefencePossible();
             var hashKey = defenceIsPossible ? 
-                fightSettings.AnimationsCombinations[CurrentAnimationIndex].DefenceAnimationHash 
-                : fightSettings.AnimationsCombinations[CurrentAnimationIndex].HitAnimationHash;
+                fightSettings.AnimationsCombinations[_currentAnimationIndex].DefenceAnimationHash 
+                : fightSettings.AnimationsCombinations[_currentAnimationIndex].HitAnimationHash;
             fighterAnimators[_fighterInd.defender].Play(hashKey);
             if (!defenceIsPossible) bloodEffects[_fighterInd.defender].Play();
         }
@@ -69,7 +70,7 @@ namespace Controllers
             var attackerClipInfo = fighterAnimators[_fighterInd.attacker].GetCurrentAnimatorClipInfo(0);
             var defenderClipInfo = fighterAnimators[_fighterInd.defender].GetCurrentAnimatorClipInfo(0);
             var attackerClipLength = attackerClipInfo[0].clip.length;
-            var defenderClipLength = defenderClipInfo[0].clip.length;
+            var defenderClipLength = defenderClipInfo[0].clip.length + awarenessDuration;
             
             return attackerClipLength > defenderClipLength ? attackerClipLength : defenderClipLength;
         }

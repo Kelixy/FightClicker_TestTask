@@ -7,14 +7,15 @@ namespace Controllers
     {
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private RectTransform instructionRectTransform;
+        [SerializeField] private Vector3 pulsedTutorialTextScale;
 
         private Sequence _pulseSequence;
 
         private void StartPulse()
         {
             _pulseSequence = DOTween.Sequence()
-                .Append(instructionRectTransform.DOScale(new Vector3(1.25f, 1.25f, 1.25f), 1).SetEase(Ease.InOutElastic))
-                .Append(instructionRectTransform.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.Flash))
+                .Append(instructionRectTransform.DOScale(pulsedTutorialTextScale, 1).SetEase(Ease.InOutElastic))
+                .Append(instructionRectTransform.DOScale(Vector3.one, 0.5f).SetEase(Ease.Flash))
                 .SetLoops(-1);
         }
 

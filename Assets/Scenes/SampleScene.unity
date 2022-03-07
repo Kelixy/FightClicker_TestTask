@@ -3775,6 +3775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 1566857166}
   instructionRectTransform: {fileID: 304151967}
+  pulsedTutorialTextScale: {x: 1.25, y: 1.25, z: 1.25}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

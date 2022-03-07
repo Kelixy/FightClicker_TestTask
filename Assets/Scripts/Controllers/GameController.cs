@@ -11,6 +11,7 @@ namespace Controllers
 
         private void Start()
         {
+            fightController.Initialize();
             tutorialController.ShowTutorial();
         }
         

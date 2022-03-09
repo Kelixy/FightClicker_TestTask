@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Settings
 {
-    [CreateAssetMenu(fileName = "Flier_Settings", menuName = "Flier_Settings", order = 51)]
+    [CreateAssetMenu(fileName = "Fight_Settings", menuName = "Fight_Settings", order = 51)]
     public class FightSettings : ScriptableObject
     {
         [Serializable]
